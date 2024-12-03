@@ -11,8 +11,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace JusticeAvengers.Migrations
 {
     [DbContext(typeof(JusticeAvengersDbContext))]
-    [Migration("20241202224520_UpdatedAgain2")]
-    partial class UpdatedAgain2
+    [Migration("20241203160833_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -242,7 +242,8 @@ namespace JusticeAvengers.Migrations
                             Description = "A skilled ranger and warrior",
                             HeroClassId = 1,
                             Level = 20,
-                            Name = "Aragorn"
+                            Name = "Aragorn",
+                            QuestId = 1
                         },
                         new
                         {
@@ -269,7 +270,7 @@ namespace JusticeAvengers.Migrations
                             HeroClassId = 4,
                             Level = 10,
                             Name = "Frodo",
-                            QuestId = 2
+                            QuestId = 1
                         },
                         new
                         {
@@ -278,7 +279,7 @@ namespace JusticeAvengers.Migrations
                             HeroClassId = 5,
                             Level = 15,
                             Name = "Eowyn",
-                            QuestId = 4
+                            QuestId = 2
                         },
                         new
                         {
@@ -287,7 +288,7 @@ namespace JusticeAvengers.Migrations
                             HeroClassId = 1,
                             Level = 17,
                             Name = "Boromir",
-                            QuestId = 5
+                            QuestId = 4
                         },
                         new
                         {
@@ -296,7 +297,7 @@ namespace JusticeAvengers.Migrations
                             HeroClassId = 6,
                             Level = 16,
                             Name = "Gimli",
-                            QuestId = 2
+                            QuestId = 3
                         },
                         new
                         {
@@ -305,7 +306,7 @@ namespace JusticeAvengers.Migrations
                             HeroClassId = 2,
                             Level = 22,
                             Name = "Thranduil",
-                            QuestId = 4
+                            QuestId = 5
                         },
                         new
                         {

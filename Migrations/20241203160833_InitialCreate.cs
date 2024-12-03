@@ -14,23 +14,6 @@ namespace JusticeAvengers.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Equipment",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: false),
-                    TypeId = table.Column<int>(type: "integer", nullable: false),
-                    Weight = table.Column<decimal>(type: "numeric", nullable: false),
-                    HeroId = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Equipment", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "EquipmentTypes",
                 columns: table => new
                 {
@@ -57,23 +40,6 @@ namespace JusticeAvengers.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Heroes",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: false),
-                    ClassId = table.Column<int>(type: "integer", nullable: false),
-                    Level = table.Column<int>(type: "integer", nullable: false),
-                    QuestId = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Heroes", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Quests",
                 columns: table => new
                 {
@@ -88,21 +54,55 @@ namespace JusticeAvengers.Migrations
                     table.PrimaryKey("PK_Quests", x => x.Id);
                 });
 
-            migrationBuilder.InsertData(
-                table: "Equipment",
-                columns: new[] { "Id", "Description", "HeroId", "Name", "TypeId", "Weight" },
-                values: new object[,]
+            migrationBuilder.CreateTable(
+                name: "Heroes",
+                columns: table => new
                 {
-                    { 1, "A blade imbued with the essence of courage", 1, "Sword of Valor", 1, 12.5m },
-                    { 2, "A bow crafted by the finest elven craftsmen", 2, "Elven Bow", 2, 4.3m },
-                    { 3, "A staff that channels arcane power", 3, "Wizard's Staff", 3, 8.1m },
-                    { 4, "A shield that radiates divine protection", 5, "Shield of Light", 4, 15.7m },
-                    { 5, "A heavy axe forged in the mountain halls", 7, "Dwarven Axe", 5, 20.2m },
-                    { 6, "A magical ring that grants invisibility", 4, "Ring of Stealth", 6, 0.2m },
-                    { 7, "The personal weapon of the woodland king", 8, "Bow of Thranduil", 2, 3.9m },
-                    { 8, "Restores health when consumed", 9, "Potion of Healing", 7, 0.5m },
-                    { 9, "A ceremonial weapon with a razor-sharp edge", 10, "Golden Dagger", 1, 2.3m },
-                    { 10, "Grants increased physical power", 1, "Amulet of Strength", 6, 1.1m }
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: false),
+                    HeroClassId = table.Column<int>(type: "integer", nullable: false),
+                    Level = table.Column<int>(type: "integer", nullable: false),
+                    QuestId = table.Column<int>(type: "integer", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Heroes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Heroes_HeroClasses_HeroClassId",
+                        column: x => x.HeroClassId,
+                        principalTable: "HeroClasses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Heroes_Quests_QuestId",
+                        column: x => x.QuestId,
+                        principalTable: "Quests",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Equipment",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: false),
+                    TypeId = table.Column<int>(type: "integer", nullable: false),
+                    Weight = table.Column<decimal>(type: "numeric", nullable: false),
+                    HeroId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Equipment", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Equipment_Heroes_HeroId",
+                        column: x => x.HeroId,
+                        principalTable: "Heroes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.InsertData(
@@ -133,23 +133,6 @@ namespace JusticeAvengers.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "Heroes",
-                columns: new[] { "Id", "ClassId", "Description", "Level", "Name", "QuestId" },
-                values: new object[,]
-                {
-                    { 1, 1, "A skilled ranger and warrior", 20, "Aragorn", 0 },
-                    { 2, 2, "An elven archer with unmatched precision", 18, "Legolas", 0 },
-                    { 3, 3, "A wise and powerful wizard", 25, "Gandalf", 0 },
-                    { 4, 4, "A brave halfling on a dangerous journey", 10, "Frodo", 0 },
-                    { 5, 5, "A fierce shieldmaiden of Rohan", 15, "Eowyn", 0 },
-                    { 6, 1, "A noble warrior with a strong sense of duty", 17, "Boromir", 0 },
-                    { 7, 6, "A stout and fearless dwarf warrior", 16, "Gimli", 0 },
-                    { 8, 2, "A king of the woodland elves", 22, "Thranduil", 0 },
-                    { 9, 3, "A graceful elf skilled in healing and magic", 14, "Arwen", 0 },
-                    { 10, 4, "A loyal companion with unwavering courage", 12, "Samwise", 0 }
-                });
-
-            migrationBuilder.InsertData(
                 table: "Quests",
                 columns: new[] { "Id", "Description", "IsCompleted", "Name" },
                 values: new object[,]
@@ -160,6 +143,55 @@ namespace JusticeAvengers.Migrations
                     { 4, "Protect the castle from the siege of the dark army", true, "Defend the Castle" },
                     { 5, "Uncover the secrets of the ancient ruins", false, "Explore the Ruins" }
                 });
+
+            migrationBuilder.InsertData(
+                table: "Heroes",
+                columns: new[] { "Id", "Description", "HeroClassId", "Level", "Name", "QuestId" },
+                values: new object[,]
+                {
+                    { 1, "A skilled ranger and warrior", 1, 20, "Aragorn", 1 },
+                    { 2, "An elven archer with unmatched precision", 2, 18, "Legolas", 2 },
+                    { 3, "A wise and powerful wizard", 3, 25, "Gandalf", 3 },
+                    { 4, "A brave halfling on a dangerous journey", 4, 10, "Frodo", 1 },
+                    { 5, "A fierce shieldmaiden of Rohan", 5, 15, "Eowyn", 2 },
+                    { 6, "A noble warrior with a strong sense of duty", 1, 17, "Boromir", 4 },
+                    { 7, "A stout and fearless dwarf warrior", 6, 16, "Gimli", 3 },
+                    { 8, "A king of the woodland elves", 2, 22, "Thranduil", 5 },
+                    { 9, "A graceful elf skilled in healing and magic", 3, 14, "Arwen", 3 },
+                    { 10, "A loyal companion with unwavering courage", 4, 12, "Samwise", 1 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Equipment",
+                columns: new[] { "Id", "Description", "HeroId", "Name", "TypeId", "Weight" },
+                values: new object[,]
+                {
+                    { 1, "A blade imbued with the essence of courage", 1, "Sword of Valor", 1, 12.5m },
+                    { 2, "A bow crafted by the finest elven craftsmen", 2, "Elven Bow", 2, 4.3m },
+                    { 3, "A staff that channels arcane power", 3, "Wizard's Staff", 3, 8.1m },
+                    { 4, "A shield that radiates divine protection", 5, "Shield of Light", 4, 15.7m },
+                    { 5, "A heavy axe forged in the mountain halls", 7, "Dwarven Axe", 5, 20.2m },
+                    { 6, "A magical ring that grants invisibility", 4, "Ring of Stealth", 6, 0.2m },
+                    { 7, "The personal weapon of the woodland king", 8, "Bow of Thranduil", 2, 3.9m },
+                    { 8, "Restores health when consumed", 9, "Potion of Healing", 7, 0.5m },
+                    { 9, "A ceremonial weapon with a razor-sharp edge", 10, "Golden Dagger", 1, 2.3m },
+                    { 10, "Grants increased physical power", 1, "Amulet of Strength", 6, 1.1m }
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Equipment_HeroId",
+                table: "Equipment",
+                column: "HeroId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Heroes_HeroClassId",
+                table: "Heroes",
+                column: "HeroClassId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Heroes_QuestId",
+                table: "Heroes",
+                column: "QuestId");
         }
 
         /// <inheritdoc />
@@ -172,10 +204,10 @@ namespace JusticeAvengers.Migrations
                 name: "EquipmentTypes");
 
             migrationBuilder.DropTable(
-                name: "HeroClasses");
+                name: "Heroes");
 
             migrationBuilder.DropTable(
-                name: "Heroes");
+                name: "HeroClasses");
 
             migrationBuilder.DropTable(
                 name: "Quests");

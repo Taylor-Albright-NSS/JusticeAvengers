@@ -33,6 +33,7 @@ app.MapGet("/api/heroes/", (JusticeAvengersDbContext db) =>
     {
         Id = h.Id,
         Name = h.Name,
+        QuestId = h.QuestId,
         HeroClass = new HeroClassDTO
         {
             Id = h.HeroClass.Id,
@@ -47,25 +48,25 @@ app.MapGet("/api/heroes/{id}", (JusticeAvengersDbContext db, int id) =>
     .Include(h => h.HeroClass)
     .Include(h => h.Quest)
     .Include(h => h.Equipment)
-    .SingleOrDefault(h => h.Id == id);
+    .Single(h => h.Id == id);
 
     HeroDTO heroDTO = new HeroDTO
     {
         Id = hero.Id,
         Name = hero.Name,
         Description = hero.Description,
-        HeroClassId = hero.HeroClassId,
         Level = hero.Level,
+        HeroClassId = hero.HeroClassId,
         HeroClass = new HeroClassDTO
         {
             Id = hero.HeroClass.Id,
             Name = hero.HeroClass.Name
         },
-        Quest = hero.Quest == null ? null : new QuestDTO // Check if Quest is null
+        QuestId = hero.QuestId,
+        Quest = new QuestDTO
         {
             Id = hero.Quest.Id,
             Name = hero.Quest.Name
-
         },
         Equipment = hero.Equipment.Select(eq => new EquipmentDTO
         {
@@ -73,7 +74,6 @@ app.MapGet("/api/heroes/{id}", (JusticeAvengersDbContext db, int id) =>
             Name = eq.Name
         })
         .ToList()
-
     };
     if (heroDTO == null) 
     {
