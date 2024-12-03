@@ -7,6 +7,7 @@ public class EquipmentDTO
     public string Name { get; set; }
     public string Description { get; set; }
     public int TypeId { get; set; }
+    public EquipmentTypeDTO Type { get; set; }
     public decimal Weight { get; set; }
-    public int HeroId { get; set; }
+    public int? HeroId { get; set; }
 }

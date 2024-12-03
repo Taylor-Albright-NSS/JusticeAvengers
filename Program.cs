@@ -49,7 +49,6 @@ app.MapGet("/api/heroes/{id}", (JusticeAvengersDbContext db, int id) =>
     .Include(h => h.Quest)
     .Include(h => h.Equipment)
     .Single(h => h.Id == id);
-
     HeroDTO heroDTO = new HeroDTO
     {
         Id = hero.Id,
@@ -81,6 +80,151 @@ app.MapGet("/api/heroes/{id}", (JusticeAvengersDbContext db, int id) =>
     }
     return Results.Ok(heroDTO);
 });
+
+app.MapGet("/api/equipment", (JusticeAvengersDbContext db) => 
+{
+    return db.Equipment
+    .Include(e => e.Type)
+    .Select(e => new EquipmentDTO 
+    {
+        Id = e.Id,
+        Name = e.Name,
+        Description = e.Description,
+        // TypeId = e.TypeId,
+        Type = new EquipmentTypeDTO
+        {
+            Id = e.Type.Id,
+            Name = e.Type.Name
+        }
+    });
+});
+
+app.MapGet("/api/quests", (JusticeAvengersDbContext db) => 
+{
+    return db.Quests
+    .Select(q => new QuestDTO 
+    {
+        Id = q.Id,
+        Name = q.Name,
+        IsCompleted = q.IsCompleted
+    });
+});
+
+app.MapGet("/api/quests/{id}", (JusticeAvengersDbContext db, int id) => 
+{
+    Quest quest = db.Quests
+    .Include(q => q.Heroes)
+    .Single(q => q.Id == id);
+
+    QuestDTO questDTO = new QuestDTO
+    {
+        Id = quest.Id,
+        Name = quest.Name,
+        Description = quest.Description,
+        IsCompleted = quest.IsCompleted,
+        Heroes = quest.Heroes.Select(hero => new HeroDTO 
+        {
+            Id = hero.Id,
+            Name = hero.Name
+
+        }).ToList()
+    };
+    return questDTO;
+});
+
+app.MapPost("/api/quests", (JusticeAvengersDbContext db, Quest quest) => 
+{
+    db.Quests.Add(quest);
+    db.SaveChanges();
+    return Results.Created($"/api/quests/{quest.Id}", quest);
+});
+
+app.MapPut("/api/heroes/{id}", (JusticeAvengersDbContext db, int id, int newQuestId) => 
+{
+    Hero hero = db.Heroes.FirstOrDefault(hero => hero.Id == id);
+    int? formerQuestId = hero.QuestId;
+    hero.QuestId = null;
+    hero.Quest = null;
+    db.SaveChanges();
+
+    hero.QuestId = newQuestId;
+    Quest quest = db.Quests.FirstOrDefault(quest => quest.Id == newQuestId);
+    hero.Quest = quest;
+    db.SaveChanges();
+    
+    return Results.Ok($"{hero.Name} was changed successfully from {formerQuestId} to {hero.QuestId}");
+});
+
+app.MapPut("/api/equipment/{id}", (JusticeAvengersDbContext db, int id, int newHeroId) => 
+{
+    Equipment equipment = db.Equipment.FirstOrDefault(equipment => equipment.Id == id);
+    equipment.HeroId = newHeroId;
+    db.SaveChanges();
+
+    return Results.Ok($"Equipment with id {id} was assigned to a hero with id {newHeroId}");
+});
+
+app.MapPut("/api/quests/{id}", (JusticeAvengersDbContext db, int id) => 
+{
+    Quest quest = db.Quests.FirstOrDefault(quest => quest.Id == id);
+    quest.IsCompleted = true;
+    db.SaveChanges();
+    return Results.Ok($"Quest has been completed!!");
+});
+
+app.MapPost("/api/equipment", (JusticeAvengersDbContext db, CreateEquipmentDTO createEquipmentDTO) => 
+{
+    var equipmentType = db.EquipmentTypes.FirstOrDefault(eq => eq.Id == createEquipmentDTO.TypeId);
+    Equipment equipment = new Equipment
+    {
+        Name = createEquipmentDTO.Name,
+        Description = createEquipmentDTO.Description,
+        TypeId = createEquipmentDTO.TypeId,
+        Type = equipmentType,
+        Weight = createEquipmentDTO.Weight,
+        HeroId = createEquipmentDTO.HeroId,
+    };
+    db.Equipment.Add(equipment);
+    db.SaveChanges();
+    return Results.Ok(equipment.Id);
+});
+
+app.MapDelete("/api/equipment/{id}", (JusticeAvengersDbContext db, int id) => 
+{
+    Equipment equipment = db.Equipment.FirstOrDefault(e => e.Id == id);
+    db.Equipment.Remove(equipment);
+    db.SaveChanges();
+    return Results.NoContent();
+});
+
+app.MapDelete("/api/heroes/{id}", (JusticeAvengersDbContext db, int id) => 
+{
+
+    Hero hero = db.Heroes.FirstOrDefault(h => h.Id == id);
+    int? formerQuestId = hero.QuestId;
+    hero.QuestId = null;
+    db.SaveChanges();
+    return Results.Ok($"{hero.Name} {hero.Id} deleted, former quest id was {formerQuestId}");
+});
+
+app.MapDelete("/api/quests/{id}", (JusticeAvengersDbContext db, int id) => 
+{
+    Quest quest = db.Quests
+    .Include(q => q.Heroes)
+    .FirstOrDefault(q => q.Id == id);
+
+    foreach(var hero in quest.Heroes)
+    {
+        hero.QuestId = null;
+    }
+
+    db.Quests.Remove(quest);
+    db.SaveChanges();
+    return Results.Ok($"Quest with id {quest.Id} has been removed");
+});
+
+
+
 
 app.Run();
 
