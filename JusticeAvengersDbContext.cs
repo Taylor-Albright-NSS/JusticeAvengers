@@ -17,6 +17,35 @@ public class JusticeAvengersDbContext : DbContext
 
 protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+
+// Configure many-to-many relationship
+    modelBuilder.Entity<Hero>()
+        .HasMany(h => h.Quest)
+        .WithMany(q => q.Heroes)
+        .UsingEntity<Dictionary<string, object>>(
+            "HeroQuest", // Name of the join table
+            j => j.HasOne<Quest>().WithMany().HasForeignKey("QuestId"), // Configuring Quest side
+            j => j.HasOne<Hero>().WithMany().HasForeignKey("HeroId"),   // Configuring Hero side
+            j =>
+            {
+                // Seed data for the join table
+                j.HasData(
+                    new { HeroId = 1, QuestId = 1 },
+                    new { HeroId = 1, QuestId = 2 },
+                    new { HeroId = 1, QuestId = 3 },
+                    new { HeroId = 2, QuestId = 1 },
+                    new { HeroId = 2, QuestId = 2 },
+                    new { HeroId = 2, QuestId = 3 },
+                    new { HeroId = 3, QuestId = 1 },
+                    new { HeroId = 4, QuestId = 5 },
+                    new { HeroId = 5, QuestId = 4 },
+                    new { HeroId = 6, QuestId = 3 },
+                    new { HeroId = 7, QuestId = 5 },
+                    new { HeroId = 8, QuestId = 2 },
+                    new { HeroId = 9, QuestId = 3 },
+                    new { HeroId = 10, QuestId = 1 }
+                );
+            });
          
         modelBuilder.Entity<Hero>().HasData(
         new Hero { Id = 1, Name = "Aragorn", Description = "A skilled ranger and warrior", HeroClassId = 1, Level = 20},

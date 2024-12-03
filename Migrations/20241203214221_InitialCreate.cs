@@ -63,8 +63,7 @@ namespace JusticeAvengers.Migrations
                     Name = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
                     HeroClassId = table.Column<int>(type: "integer", nullable: false),
-                    Level = table.Column<int>(type: "integer", nullable: false),
-                    QuestId = table.Column<int>(type: "integer", nullable: true)
+                    Level = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -75,11 +74,6 @@ namespace JusticeAvengers.Migrations
                         principalTable: "HeroClasses",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Heroes_Quests_QuestId",
-                        column: x => x.QuestId,
-                        principalTable: "Quests",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -92,15 +86,44 @@ namespace JusticeAvengers.Migrations
                     Description = table.Column<string>(type: "text", nullable: false),
                     TypeId = table.Column<int>(type: "integer", nullable: false),
                     Weight = table.Column<decimal>(type: "numeric", nullable: false),
-                    HeroId = table.Column<int>(type: "integer", nullable: false)
+                    HeroId = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Equipment", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_Equipment_EquipmentTypes_TypeId",
+                        column: x => x.TypeId,
+                        principalTable: "EquipmentTypes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
                         name: "FK_Equipment_Heroes_HeroId",
                         column: x => x.HeroId,
                         principalTable: "Heroes",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "HeroQuest",
+                columns: table => new
+                {
+                    HeroId = table.Column<int>(type: "integer", nullable: false),
+                    QuestId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_HeroQuest", x => new { x.HeroId, x.QuestId });
+                    table.ForeignKey(
+                        name: "FK_HeroQuest_Heroes_HeroId",
+                        column: x => x.HeroId,
+                        principalTable: "Heroes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_HeroQuest_Quests_QuestId",
+                        column: x => x.QuestId,
+                        principalTable: "Quests",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -146,19 +169,19 @@ namespace JusticeAvengers.Migrations
 
             migrationBuilder.InsertData(
                 table: "Heroes",
-                columns: new[] { "Id", "Description", "HeroClassId", "Level", "Name", "QuestId" },
+                columns: new[] { "Id", "Description", "HeroClassId", "Level", "Name" },
                 values: new object[,]
                 {
-                    { 1, "A skilled ranger and warrior", 1, 20, "Aragorn", 1 },
-                    { 2, "An elven archer with unmatched precision", 2, 18, "Legolas", 2 },
-                    { 3, "A wise and powerful wizard", 3, 25, "Gandalf", 3 },
-                    { 4, "A brave halfling on a dangerous journey", 4, 10, "Frodo", 1 },
-                    { 5, "A fierce shieldmaiden of Rohan", 5, 15, "Eowyn", 2 },
-                    { 6, "A noble warrior with a strong sense of duty", 1, 17, "Boromir", 4 },
-                    { 7, "A stout and fearless dwarf warrior", 6, 16, "Gimli", 3 },
-                    { 8, "A king of the woodland elves", 2, 22, "Thranduil", 5 },
-                    { 9, "A graceful elf skilled in healing and magic", 3, 14, "Arwen", 3 },
-                    { 10, "A loyal companion with unwavering courage", 4, 12, "Samwise", 1 }
+                    { 1, "A skilled ranger and warrior", 1, 20, "Aragorn" },
+                    { 2, "An elven archer with unmatched precision", 2, 18, "Legolas" },
+                    { 3, "A wise and powerful wizard", 3, 25, "Gandalf" },
+                    { 4, "A brave halfling on a dangerous journey", 4, 10, "Frodo" },
+                    { 5, "A fierce shieldmaiden of Rohan", 5, 15, "Eowyn" },
+                    { 6, "A noble warrior with a strong sense of duty", 1, 17, "Boromir" },
+                    { 7, "A stout and fearless dwarf warrior", 6, 16, "Gimli" },
+                    { 8, "A king of the woodland elves", 2, 22, "Thranduil" },
+                    { 9, "A graceful elf skilled in healing and magic", 3, 14, "Arwen" },
+                    { 10, "A loyal companion with unwavering courage", 4, 12, "Samwise" }
                 });
 
             migrationBuilder.InsertData(
@@ -178,10 +201,36 @@ namespace JusticeAvengers.Migrations
                     { 10, "Grants increased physical power", 1, "Amulet of Strength", 6, 1.1m }
                 });
 
+            migrationBuilder.InsertData(
+                table: "HeroQuest",
+                columns: new[] { "HeroId", "QuestId" },
+                values: new object[,]
+                {
+                    { 1, 1 },
+                    { 1, 2 },
+                    { 1, 3 },
+                    { 2, 1 },
+                    { 2, 2 },
+                    { 2, 3 },
+                    { 3, 1 },
+                    { 4, 5 },
+                    { 5, 4 },
+                    { 6, 3 },
+                    { 7, 5 },
+                    { 8, 2 },
+                    { 9, 3 },
+                    { 10, 1 }
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Equipment_HeroId",
                 table: "Equipment",
                 column: "HeroId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Equipment_TypeId",
+                table: "Equipment",
+                column: "TypeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Heroes_HeroClassId",
@@ -189,8 +238,8 @@ namespace JusticeAvengers.Migrations
                 column: "HeroClassId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Heroes_QuestId",
-                table: "Heroes",
+                name: "IX_HeroQuest_QuestId",
+                table: "HeroQuest",
                 column: "QuestId");
         }
 
@@ -201,16 +250,19 @@ namespace JusticeAvengers.Migrations
                 name: "Equipment");
 
             migrationBuilder.DropTable(
+                name: "HeroQuest");
+
+            migrationBuilder.DropTable(
                 name: "EquipmentTypes");
 
             migrationBuilder.DropTable(
                 name: "Heroes");
 
             migrationBuilder.DropTable(
-                name: "HeroClasses");
+                name: "Quests");
 
             migrationBuilder.DropTable(
-                name: "Quests");
+                name: "HeroClasses");
         }
     }
 }

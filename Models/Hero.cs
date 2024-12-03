@@ -8,8 +8,7 @@ public class Hero
     public string Description { get; set; }
     public int HeroClassId { get; set; }
     public int Level { get; set; }
-    public int? QuestId { get; set; }
-    public Quest? Quest { get; set; }
+    public List<Quest> Quest { get; set; }
     public List<Equipment> Equipment { get; set; }
     public HeroClass HeroClass { get; set; }
 }

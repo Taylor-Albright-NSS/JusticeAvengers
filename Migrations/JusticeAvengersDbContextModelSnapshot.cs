@@ -23,17 +23,89 @@ namespace JusticeAvengers.Migrations
 
             modelBuilder.Entity("HeroQuest", b =>
                 {
-                    b.Property<int>("HeroesId")
+                    b.Property<int>("HeroId")
                         .HasColumnType("integer");
 
                     b.Property<int>("QuestId")
                         .HasColumnType("integer");
 
-                    b.HasKey("HeroesId", "QuestId");
+                    b.HasKey("HeroId", "QuestId");
 
                     b.HasIndex("QuestId");
 
                     b.ToTable("HeroQuest");
+
+                    b.HasData(
+                        new
+                        {
+                            HeroId = 1,
+                            QuestId = 1
+                        },
+                        new
+                        {
+                            HeroId = 1,
+                            QuestId = 2
+                        },
+                        new
+                        {
+                            HeroId = 1,
+                            QuestId = 3
+                        },
+                        new
+                        {
+                            HeroId = 2,
+                            QuestId = 1
+                        },
+                        new
+                        {
+                            HeroId = 2,
+                            QuestId = 2
+                        },
+                        new
+                        {
+                            HeroId = 2,
+                            QuestId = 3
+                        },
+                        new
+                        {
+                            HeroId = 3,
+                            QuestId = 1
+                        },
+                        new
+                        {
+                            HeroId = 4,
+                            QuestId = 5
+                        },
+                        new
+                        {
+                            HeroId = 5,
+                            QuestId = 4
+                        },
+                        new
+                        {
+                            HeroId = 6,
+                            QuestId = 3
+                        },
+                        new
+                        {
+                            HeroId = 7,
+                            QuestId = 5
+                        },
+                        new
+                        {
+                            HeroId = 8,
+                            QuestId = 2
+                        },
+                        new
+                        {
+                            HeroId = 9,
+                            QuestId = 3
+                        },
+                        new
+                        {
+                            HeroId = 10,
+                            QuestId = 1
+                        });
                 });
 
             modelBuilder.Entity("JusticeAvengers.Models.Equipment", b =>
@@ -441,7 +513,7 @@ namespace JusticeAvengers.Migrations
                 {
                     b.HasOne("JusticeAvengers.Models.Hero", null)
                         .WithMany()
-                        .HasForeignKey("HeroesId")
+                        .HasForeignKey("HeroId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
