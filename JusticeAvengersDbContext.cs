@@ -19,16 +19,16 @@ protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
          
         modelBuilder.Entity<Hero>().HasData(
-        new Hero { Id = 1, Name = "Aragorn", Description = "A skilled ranger and warrior", HeroClassId = 1, Level = 20},
-        new Hero { Id = 2, Name = "Legolas", Description = "An elven archer with unmatched precision", HeroClassId = 2, Level = 18},
-        new Hero { Id = 3, Name = "Gandalf", Description = "A wise and powerful wizard", HeroClassId = 3, Level = 25},
-        new Hero { Id = 4, Name = "Frodo", Description = "A brave halfling on a dangerous journey", HeroClassId = 4, Level = 10},
-        new Hero { Id = 5, Name = "Eowyn", Description = "A fierce shieldmaiden of Rohan", HeroClassId = 5, Level = 15},
-        new Hero { Id = 6, Name = "Boromir", Description = "A noble warrior with a strong sense of duty", HeroClassId = 1, Level = 17},
-        new Hero { Id = 7, Name = "Gimli", Description = "A stout and fearless dwarf warrior", HeroClassId = 6, Level = 16},
-        new Hero { Id = 8, Name = "Thranduil", Description = "A king of the woodland elves", HeroClassId = 2, Level = 22},
-        new Hero { Id = 9, Name = "Arwen", Description = "A graceful elf skilled in healing and magic", HeroClassId = 3, Level = 14},
-        new Hero { Id = 10, Name = "Samwise", Description = "A loyal companion with unwavering courage", HeroClassId = 4, Level = 12}
+        new Hero { Id = 1, Name = "Aragorn", Description = "A skilled ranger and warrior", HeroClassId = 1, Level = 20, QuestId = 1},
+        new Hero { Id = 2, Name = "Legolas", Description = "An elven archer with unmatched precision", HeroClassId = 2, Level = 18, QuestId = 2},
+        new Hero { Id = 3, Name = "Gandalf", Description = "A wise and powerful wizard", HeroClassId = 3, Level = 25, QuestId = 3},
+        new Hero { Id = 4, Name = "Frodo", Description = "A brave halfling on a dangerous journey", HeroClassId = 4, Level = 10, QuestId = 1},
+        new Hero { Id = 5, Name = "Eowyn", Description = "A fierce shieldmaiden of Rohan", HeroClassId = 5, Level = 15, QuestId = 2},
+        new Hero { Id = 6, Name = "Boromir", Description = "A noble warrior with a strong sense of duty", HeroClassId = 1, Level = 17, QuestId = 4},
+        new Hero { Id = 7, Name = "Gimli", Description = "A stout and fearless dwarf warrior", HeroClassId = 6, Level = 16, QuestId = 3},
+        new Hero { Id = 8, Name = "Thranduil", Description = "A king of the woodland elves", HeroClassId = 2, Level = 22, QuestId = 5},
+        new Hero { Id = 9, Name = "Arwen", Description = "A graceful elf skilled in healing and magic", HeroClassId = 3, Level = 14, QuestId = 3},
+        new Hero { Id = 10, Name = "Samwise", Description = "A loyal companion with unwavering courage", HeroClassId = 4, Level = 12, QuestId = 1}
         );
 
         modelBuilder.Entity<Quest>().HasData(
